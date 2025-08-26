@@ -57,9 +57,6 @@ class Shell:
                  print("LISTANDO")
           elif comando.command=="descargar":
                     print("DESCARGANDO. . .")
-          
-          elif comando.command=="":
-                pass
           else:
                  print("Error en el comando no valido")
     
@@ -74,8 +71,7 @@ class Shell:
                 elif comando.strip( ).lower( ) in ["cls","clear"]:
                     self.limpiar_consola( )
                     continue
-                elif comando==" ":
-                    continue
+              
                 
                 # Dividir como shell (respeta comillas)
                 args = shlex.split(comando)
