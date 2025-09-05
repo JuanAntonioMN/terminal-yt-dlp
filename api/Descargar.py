@@ -1,6 +1,6 @@
-import requests #Libreria para consumir API
-from conexion import Conexion
-
+from .conexion import Conexion
+import aiohttp
+import asyncio
 class Descargar:
     
     def __init__(self,conexion:Conexion):
@@ -8,27 +8,20 @@ class Descargar:
         self.__url=conexion.getUrl( )
         
     #Descargamos un Video, PlayList, Canal
-    def descargarVideo(self,url): #Valida la url 
-        if self.__conexion.conexion( ):
+    async def descargarVideo(self,url): #Valida la url 
+            await self.__conexion.conexion( )
             try:
-                response = requests.post(
-                    f"{self.__url}/videos", 
-                    json={
-                        "url": url
-                        }
-                )
-                response.raise_for_status( )
-                return response.json( )
-            except requests.exceptions.RequestException as e:
-                print("Error con la url", e)
-        else:
-            print("Ocurrio un error")
-                            
-        return None
+               
+               async with aiohttp.ClientSession( ) as session:
+                async with session.get(f"{self.__url}/descargas/url", params={"url": url}) as resp:
+                    resp.raise_for_status( )
+                    datos = await resp.json( )
+                return datos
+            except aiohttp.ClientError as e:
+                return None
+      
+                        
 
-    def decargarArchivo(self,archivo):
-        pass
-    
-    
+
     
     

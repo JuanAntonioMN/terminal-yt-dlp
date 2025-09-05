@@ -1,11 +1,8 @@
 import argparse #Para aceptar nuestros 
 import shlex #Para limpiar nuestro array de comandos
 import os #Para limpiar la consola
-import getpass #Obtener información del usuario
-from vistas.Canal import Canal
-from vistas.Descargas import Descargas
-from vistas.Video import Video
-
+import getpass #Obtener información del usuariof
+from .Descargas import Descargas
 
 class Shell:
     
@@ -13,54 +10,34 @@ class Shell:
         self.__comandos=argparse.ArgumentParser(prog="dpm", add_help=False)
         self.__subparsers = self.__comandos.add_subparsers(dest="command")
         self.__user=getpass.getuser( )
-        self.__canal=Canal( )
-        self.__video=Video( )
         self.__descargas=Descargas( )
         
-    def comandos(self):
-         # --- Comando insert ---
-        parser_insert = self.__subparsers.add_parser("insert", help="Insertar URL")
-        parser_insert.add_argument("-u", "--url", required=True, help="URL a insertar")
-        
-        # --- Comando Descargar videos youtube ---
-        parser_descargar=self.__subparsers.add_parser("descargar",help="Descargar videos")
-        parser_descargar.add_argument("-u", "--url", required=True, help="URL a descargar")
-        
+    def comandos(self):    
         # --- Comando descargar videos por archivo ---
-        parser_archivo=self.__subparsers.add_parser("archivo",help="Descargar videos")
-        parser_archivo.add_argument("-a", "--arch", required=True, help="archivo a descargar")
+        parser_archivo=self.__subparsers.add_parser("download",help="Descargar videos")
+        parser_archivo.add_argument("-u", "--url", required=True, help="Descargar videos")
         
-        # --- Comando mostrar ---
-        parser_show=self.__subparsers.add_parser("show",help="Mostrar las urls")
-    
-        # --- Comando delete ---
-        parser_delete =self.__subparsers.add_parser("delete", help="Eliminar URL")
-        parser_delete.add_argument("-u", "--url", required=True, help="URL a eliminar")
+        videos=self.__subparsers.add_parser("nombre comando",help="Funcion del comando")
+        
   
     def limpiar_consola(self):
-        
         # Windows
         if os.name == "nt":
             os.system("cls")
         # Linux / macOS
         else:
             os.system("clear")
-
         
-    def funciones(self,comando):
+    async def funciones(self,comando,args):
           # Ejecutar comando
-          if comando.command == "insert":
-                 print("INSERTADO")
-          elif comando.command == "delete":
-                  print("ELIMINADO")
-          elif comando.command =="show":
-                 print("LISTANDO")
-          elif comando.command=="descargar":
-                    print("DESCARGANDO. . .")
+          if comando.command=="download":
+                await self.__descargas.descargar(args[2])
+          
+              
           else:
                  print("Error en el comando no valido")
     
-    def terminal(self):
+    async def terminal(self):
         self.comandos( ) #Inicializamos los comandos
         while True:
             try:
@@ -71,11 +48,17 @@ class Shell:
                 elif comando.strip( ).lower( ) in ["cls","clear"]:
                     self.limpiar_consola( )
                     continue
-              
-                
+
+
                 # Dividir como shell (respeta comillas)
                 args = shlex.split(comando)
+                
+                #dpm download -u url
+                
+                #"dpm" "Canal" "-u" "url"
+                
 
+                
                 # Si no empieza con 'dpm', obligamos a que esté
                 
                 if args and args[0] != "dpm":
@@ -84,8 +67,8 @@ class Shell:
                 
                 args = args[1:]
                 parsed = self.__comandos.parse_args(args)
-
-                self.funciones(parsed)
+                
+                await self.funciones(parsed,args)
               
             except SystemExit:
                 pass

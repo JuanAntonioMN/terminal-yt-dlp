@@ -1,5 +1,5 @@
 from vistas.Shell import Shell
-
+import asyncio
 if __name__ == "__main__":
     shell=Shell( )
-    shell.terminal( )
+    asyncio.run(shell.terminal())
