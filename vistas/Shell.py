@@ -13,12 +13,11 @@ class Shell:
         self.__descargas=Descargas( )
         
     def comandos(self):    
-        # --- Comando descargar videos por archivo ---
-        parser_archivo=self.__subparsers.add_parser("download",help="Descargar videos")
-        parser_archivo.add_argument("-u", "--url", required=True, help="Descargar videos")
+        # --- Comando descargar informacion de videos  ---
+        descargas=self.__subparsers.add_parser("download",help="Descargar informacion por enlace o archivos")
+        descargas.add_argument("-u","-a", required=True, help="Descargar informacion por enlace o archivos")
         
-        videos=self.__subparsers.add_parser("nombre comando",help="Funcion del comando")
-        
+       
   
     def limpiar_consola(self):
         # Windows
@@ -29,12 +28,17 @@ class Shell:
             os.system("clear")
         
     async def funciones(self,comando,args):
-          # Ejecutar comando
-          if comando.command=="download":
-                await self.__descargas.descargar(args[2])
-          
-              
-          else:
+          # Validamos el comando
+          match comando.command:
+            case "download":
+                opcion=args[1]
+                #Descargar por archivo
+                if opcion=="-a":
+                    await self.__descargas.descargarArchivo(args[2])
+                #Descargar por URL
+                if opcion=="-u":
+                    await self.__descargas.descargarUrl(args[2])
+            case _:
                  print("Error en el comando no valido")
     
     async def terminal(self):
@@ -53,12 +57,7 @@ class Shell:
                 # Dividir como shell (respeta comillas)
                 args = shlex.split(comando)
                 
-                #dpm download -u url
-                
-                #"dpm" "Canal" "-u" "url"
-                
-
-                
+             
                 # Si no empieza con 'dpm', obligamos a que esté
                 
                 if args and args[0] != "dpm":
@@ -66,9 +65,9 @@ class Shell:
                     continue
                 
                 args = args[1:]
-                parsed = self.__comandos.parse_args(args)
-                
-                await self.funciones(parsed,args)
+                comandos = self.__comandos.parse_args(args)
+                print(args)
+                await self.funciones(comandos,args)
               
             except SystemExit:
                 pass
