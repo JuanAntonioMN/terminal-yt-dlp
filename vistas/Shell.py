@@ -3,6 +3,8 @@ import shlex #Para limpiar nuestro array de comandos
 import os #Para limpiar la consola
 import getpass #Obtener información del usuariof
 from .Descargas import Descargas
+from .Canales import Canales
+
 
 class Shell:
     
@@ -11,14 +13,19 @@ class Shell:
         self.__subparsers = self.__comandos.add_subparsers(dest="command")
         self.__user=getpass.getuser( )
         self.__descargas=Descargas( )
+        self.__canales=Canales()
         
     def comandos(self):    
         # --- Comando descargar videos por archivo ---
-        parser_archivo=self.__subparsers.add_parser("download",help="Descargar videos")
-        parser_archivo.add_argument("-u", "--url", required=True, help="Descargar videos")
+        parser_archivo=self.__subparsers.add_parser("download",help="Descargar informacion por enlace o archivos")
+        parser_archivo.add_argument("-u", "-a", required=True, help="Descargar videos")
         
-        videos=self.__subparsers.add_parser("nombre comando",help="Funcion del comando")
-        
+        parser_canales=self.__subparsers.add_parser("canal",help="Operaciones con  Canales")
+        parser_canales.add_argument("-m", "--mostrar", action="store_true",help="mostrar canales")
+        parser_canales.add_argument("-n", "--nombre", help="Nombre del canal")
+        parser_canales.add_argument("-u", "--url", help="URL del canal")
+  
+            
   
     def limpiar_consola(self):
         # Windows
@@ -30,12 +37,25 @@ class Shell:
         
     async def funciones(self,comando,args):
           # Ejecutar comando
-          if comando.command=="download":
-                await self.__descargas.descargar(args[2])
-          
-              
-          else:
-                 print("Error en el comando no valido")
+            if comando.command=="download":
+                    await self.__descargas.descargar(args[2])
+            elif comando.command == "canal":
+                if comando.nombre:
+                    resultado= await self.__canales.buscarNombre(args[2])
+                   
+                    print(resultado)
+                elif comando.url:
+                
+                    resultados= await self.__canales.buscarUrl(comando.url)
+                    
+                    print(resultados)
+            
+                elif comando.mostrar:
+                    res=await self.__canales.canales()
+                    print (res)
+
+            else:
+                print("Error: comando no válido")
     
     async def terminal(self):
         self.comandos( ) #Inicializamos los comandos
