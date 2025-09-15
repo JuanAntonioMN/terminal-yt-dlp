@@ -17,8 +17,7 @@ class Shell:
         descargas=self.__subparsers.add_parser("download",help="Descargar informacion por enlace o archivos")
         descargas.add_argument("-u","-a", required=True, help="Descargar informacion por enlace o archivos")
         
-       
-  
+    
     def limpiar_consola(self):
         # Windows
         if os.name == "nt":
@@ -66,7 +65,7 @@ class Shell:
                 
                 args = args[1:]
                 comandos = self.__comandos.parse_args(args)
-                print(args)
+               
                 await self.funciones(comandos,args)
               
             except SystemExit:
