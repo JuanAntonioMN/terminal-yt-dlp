@@ -4,6 +4,7 @@ import os        # Para limpiar la consola
 import getpass   # Obtener información del usuario
 from .Descargas import Descargas
 from .Canales import Canales
+from .Videos import Videos
 
 
 class Shell:
@@ -12,9 +13,10 @@ class Shell:
         # Parser principal
         self.__comandos = argparse.ArgumentParser(prog="dpm", add_help=False)
         self.__subparsers = self.__comandos.add_subparsers(dest="command")
-        self.__user = getpass.getuser( )
-        self.__descargas = Descargas( )
-        self.__canales = Canales( )   # añadido en el segundo código
+        self.__user = getpass.getuser()
+        self.__descargas = Descargas()
+        self.__canales = Canales()   # añadido en el segundo código
+        self.__videos = Videos() #añadido
         
     def comandos(self):    
         
@@ -37,6 +39,24 @@ class Shell:
         )
         canales.add_argument(
             "-u", "--url", help="URL del canal"
+        )
+        
+        # --- Comando video ---
+        
+        videos = self.__subparsers.add_parser(
+            "videos", help= "Operaciones con videos"
+        )
+        videos.add_argument(
+            "-n", "--nombre", help="Buscar videos por Nombre"
+        )
+        videos.add_argument(
+            "-u", "--url", help="Buscar videos por URL"
+        )
+        videos.add_argument(
+            "-i", "--id", help="Buscar videos por ID del canal"
+        )
+        videos.add_argument(
+            "-m", "--mostrar", action="store_true", help= "Mostrar todos los videos"
         )
   
     def limpiar_consola(self):
@@ -73,7 +93,23 @@ class Shell:
                     print(res)
                 else:
                     print("Error: opción de canal no válida")
-
+                    
+            case "videos":
+                if comando.nombre:
+                    datos = await self.__videos.buscarVideoNombre(args[2])
+                    print(datos)
+                elif comando.url:
+                    datos = await self.__videos.buscarVideoURL(args[2])
+                    print(datos)
+                elif comando.id:
+                    datos = await self.__videos.buscarVideoID(args[2])
+                    print(datos)
+                elif comando.mostrar:
+                    datos = await self.__videos.mostrarVideos()
+                    print(datos)
+                else:
+                    print("Error: Comando no válido")
+                    
             case _:
                 print("Error: comando no válido")
     
