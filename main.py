@@ -1,3 +1,4 @@
+# from vistas.Shell import Shell
 from vistas.Shell import Shell
 import asyncio
 if __name__ == "__main__":
