@@ -12,11 +12,12 @@ class Shell:
         # Parser principal
         self.__comandos = argparse.ArgumentParser(prog="dpm", add_help=False)
         self.__subparsers = self.__comandos.add_subparsers(dest="command")
-        self.__user = getpass.getuser()
-        self.__descargas = Descargas()
-        self.__canales = Canales()   # añadido en el segundo código
+        self.__user = getpass.getuser( )
+        self.__descargas = Descargas( )
+        self.__canales = Canales( )   # añadido en el segundo código
         
     def comandos(self):    
+        
         # --- Comando descargar videos ---
         descargas= self.__subparsers.add_parser("download", help="Descargar información por enlace o archivos"
         )

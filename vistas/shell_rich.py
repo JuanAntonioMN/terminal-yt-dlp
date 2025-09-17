@@ -79,7 +79,7 @@ class Shell:
                 canales = await self.__canales.canales()
                 if isinstance (canales,str):
                     canales=json.loads(canales)
-                self.mostrar_tabla_canales(canales)
+                    self.mostrar_tabla_canales(canales)
 
             elif comando.nombre:
                 res =await self.__canales.buscarNombre(args[2])

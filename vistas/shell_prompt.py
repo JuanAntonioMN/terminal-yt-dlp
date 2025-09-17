@@ -86,7 +86,7 @@ class Shell:
 
     async def funciones(self, comando, args):
         if comando.command == "download":
-            await self.__descargas.descargar(comando.url)
+            await self.__descargas.descargarUrl(args[2])
 
         elif comando.command == "canal":
             if comando.mostrar:
