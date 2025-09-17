@@ -5,7 +5,10 @@ import getpass   # Obtener información del usuario
 from .Descargas import Descargas
 from .Canales import Canales
 from .Videos import Videos
-
+from prompt_toolkit import PromptSession
+from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.styles import Style
 
 class Shell:
     
@@ -17,6 +20,30 @@ class Shell:
         self.__descargas = Descargas()
         self.__canales = Canales()   # añadido en el segundo código
         self.__videos = Videos() #añadido
+        
+      # Prompt Toolkit
+        self.__completer = WordCompleter(
+            [
+                "dpm download -u",
+                "dpm canal --mostrar",
+                "dpm canal --nombre",
+                "dpm canal --url",
+                "dpm canal --cantidad",
+                "exit",
+                "quit",
+                "cls",
+                "clear",
+            ],
+            ignore_case=True,
+        )
+        self.__session = PromptSession(completer=self.__completer)
+
+        self.__style = Style.from_dict({
+            "username": "ansigreen bold",
+            "at": "ansiyellow",
+            "program": "ansiblue underline",
+            "arrow": "ansired",
+        })
         
     def comandos(self):    
         # --- Comando descargar videos ---
@@ -116,12 +143,19 @@ class Shell:
         self.comandos()  # Inicializamos los comandos
         while True:
             try:
-                comando = input(f"{self.__user}@dpm> ")
-                
-                if comando.strip( ).lower( ) in ["exit", "quit"]:
+                prompt_text = HTML(
+                    f"<username>{self.__user}</username>"
+                    f"<at>@</at>"
+                    f"<program>dpm</program>"
+                    f"<arrow>> </arrow>"
+                )
+
+                comando = await self.__session.prompt_async(prompt_text, style=self.__style)
+
+                if comando.strip().lower() in ["exit", "quit"]:
                     break
-                elif comando.strip( ).lower( ) in ["cls", "clear"]:
-                    self.limpiar_consola( )
+                elif comando.strip().lower() in ["cls", "clear"]:
+                    self.limpiar_consola()
                     continue
 
                 # Dividir como shell (respeta comillas)
