@@ -50,6 +50,7 @@ class Shell:
         })
         
     def comandos(self):    
+        
         # --- Comando descargar videos ---
         descargas= self.__subparsers.add_parser("download", help="Descargar información por enlace o archivos"
         )
