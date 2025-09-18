@@ -15,7 +15,7 @@ class ClienteVideos:
         param = {"id": id_video}
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=param) as resp:
-                resp.raise_for_status( )
+                resp.raise_for_status()
                 datos=await resp.json()
                 if datos:
                     return  datos

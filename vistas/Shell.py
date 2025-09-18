@@ -29,6 +29,10 @@ class Shell:
                 "dpm canal --nombre",
                 "dpm canal --url",
                 "dpm canal --cantidad",
+                "dpm videos -n",
+                "dpm videos -u",
+                "dpm videos -i",
+                "dpm videos -m",
                 "exit",
                 "quit",
                 "cls",
@@ -122,17 +126,13 @@ class Shell:
                     
             case "videos":
                 if comando.nombre:
-                    datos = await self.__videos.buscarVideoNombre(args[2])
-                    print(datos)
+                    await self.__videos.buscarVideoNombre(args[2])
                 elif comando.url:
-                    datos = await self.__videos.buscarVideoURL(args[2])
-                    print(datos)
+                    await self.__videos.buscarVideoURL(args[2])
                 elif comando.id:
-                    datos = await self.__videos.buscarVideoID(args[2])
-                    print(datos)
+                    await self.__videos.buscarVideoID(args[2])
                 elif comando.mostrar:
-                    datos = await self.__videos.mostrarVideos()
-                    print(datos)
+                    await self.__videos.mostrarVideos()
                 else:
                     print("Error: Comando no válido")
                     

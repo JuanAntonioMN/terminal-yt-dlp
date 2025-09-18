@@ -11,17 +11,14 @@ class Canales:
         self.console = Console()
 
     def mostrar_tabla(self, canales):
+       
         if not canales:
-            self.console.print("[red]⚠ No se encontraron canales[/red]")
-            return
+            self.console.print("[red]⚠ No se encontraron canales[/red]") 
 
         if isinstance(canales, dict):
-            canales = [canales]
-        elif isinstance(canales, str):
-            try:
-                canales = json.loads(canales)
-            except json.JSONDecodeError:
-                canales = [{"Nombre_Canal": canales}]
+            data = [canales]
+        if isinstance(canales,str):
+            data=json.loads(canales)
 
         table = Table(title="📺 Lista de Canales")
         table.add_column("ID", style="magenta")
@@ -30,15 +27,16 @@ class Canales:
         table.add_column("Videos", style="yellow")
         table.add_column("Comentarios", style="red")
         table.add_column("Subtítulos", style="blue")
-
-        for canal in canales:
-            table.add_row(
-                str(canal.get("idCanal", "")),
-                canal.get("Nombre_Canal", ""),
-                canal.get("Url_Canal", ""),
-                str(canal.get("Cantidad_de_Videos", "")),
-                canal.get("Ruta_Comentarios", ""),
-                canal.get("Ruta_Subtitulos", ""),
+        
+       
+        for canal in data:
+           table.add_row(
+               str(canal["idCanal"]),
+               canal["Nombre_Canal"],
+               canal["Url_Canal"],
+               str(canal["Cantidad_de_Videos"]),
+               canal["Ruta_Comentarios"],
+               canal["Ruta_Subtitulos"],
             )
 
         self.console.print(table)
